@@ -1,0 +1,82 @@
+name: SiriusFFA
+version: '${project.version}'
+main: me.sirius.ffa.SiriusFFA
+api-version: '1.21'
+author: Sirius
+website: https://github.com/JhonTova
+description: 'Arenas FFA permanentes y eventos temporales (juggernaut, gun game, one in the chamber) para servidores survival.'
+
+# Sin SiriusCore.jar, Bukkit ni intenta cargar este plugin.
+depend:
+  - SiriusCore
+
+softdepend:
+  - WorldGuard
+  - DeluxeCombat
+  - PlaceholderAPI
+  - MMOItems
+  - MythicLib
+
+commands:
+  ffa:
+    description: Arenas y eventos FFA.
+    usage: /ffa [join|leave|list|info|stats|top|start|stop|create|delete|pos1|pos2|setspawn|kitcreate|kitsave|reload]
+    aliases: [arena, ffa1]
+
+permissions:
+  siriusffa.join:
+    description: Entrar a una arena o a un evento.
+    default: true
+  siriusffa.leave:
+    description: Salir del FFA con /ffa leave.
+    default: true
+
+  siriusffa.bypass.inventory:
+    description: Entrar a un FFA con kit sin el inventario vacío.
+    default: op
+  siriusffa.bypass.commands:
+    description: Usar cualquier comando dentro del FFA.
+    default: op
+  siriusffa.bypass.teleport:
+    description: Teletransportarse fuera de la arena (cierra la sesión y devuelve el inventario).
+    default: op
+
+  siriusffa.admin:
+    description: Todos los permisos de administración de SiriusFFA.
+    default: op
+    children:
+      siriusffa.create: true
+      siriusffa.delete: true
+      siriusffa.edit: true
+      siriusffa.kit: true
+      siriusffa.event: true
+      siriusffa.start: true
+      siriusffa.stop: true
+      siriusffa.reload: true
+      siriusffa.bypass.inventory: true
+      siriusffa.bypass.commands: true
+      siriusffa.bypass.teleport: true
+  siriusffa.create:
+    description: Crear arenas.
+    default: op
+  siriusffa.delete:
+    description: Borrar arenas.
+    default: op
+  siriusffa.edit:
+    description: Editar arenas (posiciones, spawns, kit, lobby).
+    default: op
+  siriusffa.kit:
+    description: Crear, guardar y borrar kits.
+    default: op
+  siriusffa.event:
+    description: Gestionar eventos.
+    default: op
+  siriusffa.start:
+    description: Lanzar un evento.
+    default: op
+  siriusffa.stop:
+    description: Parar el evento en marcha.
+    default: op
+  siriusffa.reload:
+    description: Recargar la configuración.
+    default: op

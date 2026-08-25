@@ -1,0 +1,331 @@
+# ─────────────────────────────────────────────────────────────────────────────
+#  SiriusFFA — eventos
+#
+#  Un evento es una partida temporal: la lanza un admin con /ffa start <evento>,
+#  los jugadores entran con /ffa join event, hay cuenta atrás, ganador y premio.
+#  Para el FFA de siempre, que está abierto todo el día, usa arenas.yml.
+#
+#  Solo puede haber un evento en marcha a la vez.
+#
+#  Claves comunes a todos:
+#    mode                     el modo que manda: classic, juggernaut, gun-game,
+#                             one-in-the-chamber (o el que registres tú)
+#    arena                    id de una arena de arenas.yml. Si el mapa es solo para el
+#                             evento, cierrala con /ffa privacy <arena> closed: asi no
+#                             sale en /ffa join ni en el selector. Mientras el evento
+#                             corre, ademas, TODAS las arenas quedan cerradas
+#                             (config.yml -> events.close-arenas).
+#    min-players/max-players  0 en max = sin tope
+#    countdown                segundos de cuenta atrás cuando se llega al mínimo
+#    wait-timeout             segundos esperando gente antes de cancelarlo solo (0 = nunca)
+#    end-delay                segundos entre el final y sacar a la gente. NO lo bajes de
+#                             30 si usas DeluxeCombat: al terminar se apaga el PVP de la
+#                             región y se espera a que caduque la marca de combate, y sin
+#                             esa espera el plugin de combate cancela el viaje al spawn y
+#                             devuelve a la gente a la arena. Mientras se espera ya no se
+#                             puede pegar ni recibir daño de nada
+#    max-time                 duración máxima (10m, 90s, 1h). Vacío = la decide el modo
+#    require-empty-inventory  exigir inventario vacío para entrar (recomendado con kits)
+#    kits                     rol -> kit de kits.yml. El juggernaut NO tiene kit propio:
+#                             en ese modo solo se usa 'normal' y lo lleva todo el mundo
+#    effects                  rol -> efectos que lleva encima, además del kit. Aquí es
+#                             donde se decide lo fuerte que es un rol
+#    health-boost             rol -> corazones extra (cada nivel son 2). Es un atajo del
+#                             efecto 'health_boost'; puedes escribirlo en 'effects'
+#    glow                     rol -> si brilla para que todos lo vean
+#    keep-food                rol -> no pierde comida (ni deja de poder correr)
+#    commands                 política propia de comandos (si falta, hereda de config.yml)
+#    rewards                  comandos de consola: %player% es el jugador
+#
+#  Los roles los pone el modo: casi todos usan solo 'normal'; juggernaut usa
+#  'normal' y 'juggernaut'. Un rol no son ítems, son EFECTOS: el juggernaut lleva el
+#  mismo kit que los demás y lo que le hace duro es su resistencia y sus corazones
+#  extra. Todo lo que cambia el cuerpo del jugador son efectos de poción, nunca
+#  atributos: un atributo se queda escrito en el jugador hasta que alguien lo devuelva
+#  a su sitio —y con un sincronizador de inventarios entre servidores por medio, se lo
+#  lleva puesto a los demás—, mientras que un efecto caduca solo.
+#
+#  Si copias un evento con un id propio ('jagger', 'juggernaut-navidad'), ese evento no
+#  hereda nada de lo que hay aquí: cópiate también sus 'effects', su 'push' y su 'kits'.
+#
+#  SALA DE ESPERA: los jugadores esperan fuera de la arena (/ffa setlobby para la
+#  global, o /ffa setlobby <arena> para una propia) mientras corre la cuenta atrás.
+#  Ahí no hay PVP ni frontera; al llegar a cero se les lleva a los puntos de
+#  aparición de la arena con su kit puesto.
+# ─────────────────────────────────────────────────────────────────────────────
+
+events:
+
+  juggernaut:
+    enabled: true
+    display-name: 'Juggernaut'
+    mode: juggernaut
+    arena: event-arena
+
+    min-players: 2
+    max-players: 30
+    countdown: 30
+    wait-timeout: 180
+    end-delay: 30
+
+    require-empty-inventory: true
+    allow-leave: true
+    spectators: true
+
+    rounds:
+      # Lo que tiene que aguantar vivo el juggernaut para extraerse y GANAR EL EVENTO.
+      # En cuanto uno lo consigue el evento termina ahí mismo, queden las rondas que
+      # queden: el objetivo es sobrevivir, y ya lo ha cumplido.
+      survival-time: 5m
+      # Rondas como máximo. Si se acaban sin que ningún juggernaut aguante la suya
+      # entera, el evento termina SIN GANADOR: aguantar más que otro no es aguantar.
+      max-rounds: 5
+
+    # Evita que le vuelva a tocar al mismo dos rondas seguidas, salvo que no quede
+    # nadie más a quien elegir.
+    prevent-consecutive-selection: true
+
+    # La vara de empuje del juggernaut.
+    #
+    # Golpeando lleva el encantamiento de empuje, así que cada golpe manda lejos al que
+    # se le pegue detrás; con el clic derecho suelta una onda que aparta a todo el que
+    # tenga cerca. No hace daño de serie: el juggernaut ya pega, lo que necesitaba era
+    # poder quitarse de encima a seis a la vez.
+    #
+    # Se le da al empezar su ronda y se le quita sola en cuanto deja de serlo, porque el
+    # kit se vuelve a repartir entero. No se puede tirar ni guardar en ningún sitio.
+    push:
+      enabled: true
+      item: STICK
+      # Hueco de la barra donde se pone (0-8). Si el kit ya ocupa ese hueco, busca otro.
+      slot: 8
+      # Nivel del encantamiento de empuje del golpe. 0 = un palo normal.
+      knockback: 2
+      # La onda: bloques a los que llega, cuánto empuja y cuánto levanta.
+      radius: 5.0
+      strength: 1.4
+      lift: 0.42
+      # Segundos entre onda y onda.
+      cooldown: 8
+      # Daño de la onda (2.0 = un corazón). En 0 solo empuja.
+      damage: 0.0
+
+    # EL JUGGERNAUT NO LLEVA KIT PROPIO: pelea con el mismo que los demás.
+    #
+    # Solo hay un kit en este modo, el de 'normal', y se lo lleva todo el mundo. Lo que
+    # hace juggernaut al juggernaut son sus efectos, aquí debajo: se ven en la barra del
+    # jugador, caducan solos y se ajustan sin tocar ningún kit. Si escribes
+    # 'juggernaut: <kit>' aquí, se ignora y la consola te lo dice al arrancar.
+    kits:
+      normal: ffa-normal
+
+    # Lo que lleva encima cada rol, aparte de los ítems del kit.
+    #
+    #   'efecto;segundos;nivel'   — 0 segundos = mientras dure la ronda
+    #                             — nivel 0 = I, nivel 1 = II, y así
+    #
+    # El nombre del efecto es el de Minecraft: resistance, strength, speed, regeneration,
+    # health_boost, absorption, fire_resistance, jump_boost, haste, night_vision...
+    #
+    # Todo son POCIONES, nunca atributos: 'health_boost;0;4' son 10 corazones extra que
+    # se van solos cuando acaba la ronda. Un atributo se quedaría escrito en el jugador
+    # hasta que alguien lo devolviera a su sitio, y con HuskSync por medio se sincroniza
+    # así a los demás servidores. Por eso aquí no hay ni uno.
+    effects:
+      juggernaut:
+        - 'resistance;0;0'      # aguanta más
+        - 'health_boost;0;4'    # health_boost V: +10 corazones, y se van solos
+        - 'strength;0;0'        # pega más
+        - 'regeneration;0;0'    # se cura solo
+        - 'speed;0;0'           # y puede escaparse
+      normal: []
+
+    # El juggernaut brilla para que todos sepan a quién van.
+    glow:
+      juggernaut: true
+
+    # Su ronda dura diez minutos: si la comida le baja de seis puntos deja de poder
+    # correr y el rol mas fuerte del mapa acaba siendo el mas lento.
+    keep-food:
+      juggernaut: true
+
+    commands:
+      mode: WHITELIST
+      allowed:
+        - spawn
+
+    # Lo que se lleva el que mata. La regeneración es lo que hace que valga la pena
+    # entrar a por el juggernaut: matar a un cazador te deja listo para el siguiente.
+    kill:
+      effects:
+        regeneration:
+          enabled: true
+          duration: 5
+          amplifier: 4
+      food: 6
+      extinguish: true
+      commands: []
+
+    rewards:
+      winner:
+        commands:
+          - 'eco give %player% 10000'
+      participation:
+        commands:
+          - 'eco give %player% 1000'
+
+  classic:
+    enabled: true
+    display-name: 'Classic FFA'
+    mode: classic
+    arena: event-arena
+
+    min-players: 2
+    max-players: 40
+    countdown: 30
+    wait-timeout: 180
+    end-delay: 30
+
+    # Gana el primero que llegue a estas kills. 0 = solo manda el tiempo.
+    kills-to-win: 30
+    max-time: 15m
+
+    kill:
+      effects:
+        regeneration:
+          enabled: true
+          duration: 5
+          amplifier: 4
+      food: 6
+      extinguish: true
+
+    # Ejemplo: sin efectos ni brillo, todos iguales.
+    effects:
+      normal: []
+
+    require-empty-inventory: true
+    allow-leave: true
+    spectators: true
+
+    kits:
+      normal: ffa-normal
+
+    rewards:
+      winner:
+        commands:
+          - 'eco give %player% 8000'
+      participation:
+        commands: []
+
+  gun-game:
+    enabled: true
+    display-name: 'Gun Game'
+    mode: gun-game
+    arena: event-arena
+
+    min-players: 2
+    max-players: 24
+    countdown: 30
+    end-delay: 30
+    max-time: 20m
+
+    require-empty-inventory: true
+    allow-leave: true
+    spectators: true
+
+    kill:
+      effects:
+        regeneration:
+          enabled: true
+          duration: 5
+          amplifier: 4
+      food: 6
+      extinguish: true
+
+    # ── LOS NIVELES ─────────────────────────────────────────────────────────
+    #
+    # Cada kill sube uno. Quien mata estando en el último nivel gana el evento: la
+    # escalera entera hay que subirla y rematarla, que es lo que hace que el último
+    # nivel valga algo.
+    #
+    # Con 'vanilla: true' los niveles los pone el plugin: una escalera de ítems de
+    # Minecraft de las manos vacías a la netherita encantada, sin tener que montar
+    # veinte kits para probar el modo. No hace falta configurar nada más.
+    vanilla: true
+
+    # Cuántos peldaños de esa escalera se usan (máximo 20). Si pides menos, se cogen
+    # repartidos y no los primeros: una escalera de diez niveles también acaba en
+    # netherita, o subir de nivel dejaría de significar nada a media partida.
+    vanilla-levels: 20
+
+    # La comida que lleva cada peldaño, con el formato de kits.yml.
+    vanilla-food: 'cooked_beef;4'
+
+    # Para poner tus propios kits: 'vanilla: false' y esta lista. Los kits son los de
+    # kits.yml, así que pueden llevar MMOItems, modelos propios o lo que quieras.
+    # Los gun-1 ... gun-8 vienen de ejemplo en kits.yml.
+    #
+    # levels:
+    #   1: gun-1
+    #   2: gun-2
+    #   3: gun-3
+    #   4: gun-4
+    #   5: gun-5
+    #   6: gun-6
+    #   7: gun-7
+    #   8: gun-8
+
+    # Bajar de nivel al morir.
+    lose-level-on-death: false
+
+    kits:
+      normal: gun-1
+
+    rewards:
+      winner:
+        commands:
+          - 'eco give %player% 8000'
+
+  one-in-the-chamber:
+    enabled: true
+    display-name: 'One in the Chamber'
+    mode: one-in-the-chamber
+    arena: event-arena
+
+    min-players: 2
+    max-players: 20
+    countdown: 30
+    end-delay: 30
+    max-time: 15m
+
+    kill:
+      effects:
+        regeneration:
+          enabled: true
+          duration: 5
+          amplifier: 4
+      food: 6
+      extinguish: true
+
+    require-empty-inventory: true
+    allow-leave: true
+    spectators: true
+
+    # Vidas por jugador; al gastarlas queda eliminado.
+    lives: 3
+    # Flechas con las que se empieza y las que da cada muerte.
+    starting-ammo: 1
+    ammo-per-kill: 1
+    ammo-item: ARROW
+    # Una flecha mata de un tiro.
+    instant-kill-projectile: true
+    # Daño del cuerpo a cuerpo (2.0 = un corazón).
+    melee-damage: 2.0
+
+    kits:
+      normal: oitc
+
+    rewards:
+      winner:
+        commands:
+          - 'eco give %player% 8000'

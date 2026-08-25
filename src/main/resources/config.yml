@@ -1,0 +1,311 @@
+# ─────────────────────────────────────────────────────────────────────────────
+#  SiriusFFA — configuración general
+#
+#  Dos sistemas separados:
+#    · ARENAS  (arenas.yml) → siempre abiertas, se entra con /ffa join <arena>
+#    · EVENTOS (events.yml) → los lanza un admin, se entra con /ffa join event
+#
+#  Los textos que ve el jugador están en messages.yml.
+# ─────────────────────────────────────────────────────────────────────────────
+
+general:
+  # Reaparecer sin tener que pulsar el botón de "reaparecer".
+  instant-respawn: true
+
+  # Ticks de espera antes de reponer el kit al reaparecer. 1 va bien; súbelo solo
+  # si otro plugin también toca el inventario al reaparecer.
+  respawn-delay-ticks: 1
+
+  # Ticks de espera antes de devolverle el inventario a quien vuelve después de una
+  # caída del servidor. Súbelo si usas un sincronizador entre servidores (HuskSync y
+  # similares): ellos escriben el inventario al entrar, y hay que dejarles terminar
+  # primero o su escritura pisaría la nuestra. 40 (dos segundos) suele bastar.
+  recovery-delay-ticks: 1
+
+  # Segundos de invulnerabilidad al aparecer en la arena. Cada arena puede tener
+  # el suyo (spawn-protection en arenas.yml). Atacar la pierde al instante.
+  spawn-protection: 3
+
+  # Impedir que se tiren ítems al suelo cuando se lleva un kit prestado.
+  block-item-drop: true
+
+  # Impedir abrir cofres, enderchest, shulkers y mochilas con un kit puesto.
+  block-containers: true
+
+  # Impedir mover ítems del kit a cualquier inventario que abra otro plugin.
+  block-kit-transfer: true
+
+  # Ocultar los mensajes de muerte de vanilla dentro del FFA (SiriusFFA anuncia
+  # las suyas solo a los que están jugando).
+  hide-vanilla-death-messages: true
+
+  # No dejar entrar a un FFA a quien está en combate según DeluxeCombat.
+  deny-join-in-combat: true
+
+leave:
+  # Comandos que se consideran "salir del FFA". Si están permitidos por la política
+  # de comandos y el teletransporte llega a ocurrir, la sesión se cierra sola y el
+  # jugador recupera su inventario. SiriusFFA NO ejecuta estos comandos: los deja
+  # pasar, y quien los atiende sigue siendo el plugin de siempre.
+  exit-commands:
+    - spawn
+    - lobby
+
+  # Segundos que se espera al teletransporte después del comando. Si otro plugin lo
+  # cancela (por ejemplo por combate), el jugador se queda dentro como si nada.
+  exit-window-seconds: 5
+
+  # SAVED = vuelve al sitio exacto desde el que entró (lo normal en un survival).
+  # LOBBY = vuelve a la sala de espera de /ffa setlobby.
+  return: SAVED
+
+  # Permitir /ffa leave en arenas permanentes. En eventos lo decide cada evento
+  # con su allow-leave.
+  allow-leave-arena: true
+
+boundary:
+  # Impedir que se salgan del cuboide de la arena (pos1/pos2).
+  prevent-exit: true
+
+  # TELEPORT   = de vuelta al punto de aparición.
+  # PUSH_BACK  = al punto más cercano de dentro (menos brusco).
+  # CANCEL     = simplemente no le deja avanzar.
+  action: TELEPORT
+
+teleport:
+  # Causas de teletransporte que SÍ pueden sacar a un jugador de la arena.
+  # Vacío = ninguna, que es lo que impide /home, /back, /tpa y compañía sin tener
+  # que enumerarlos. Los teletransportes del propio SiriusFFA nunca se bloquean, y
+  # los que acaban dentro de la arena tampoco (perlas incluidas).
+  # Valores posibles: PLUGIN, COMMAND, ENDER_PEARL, CHORUS_FRUIT, SPECTATE, UNKNOWN...
+  allowed-causes: []
+
+# ─────────────────────────────────────────────────────────────────────────────
+#  COMANDOS
+#
+#  mode: WHITELIST (solo lo de la lista) | BLACKLIST (todo menos la lista)
+#        ALLOW_ALL (todo) | DENY_ALL (nada)
+#
+#  Prioridad: la del evento o la de la arena → la de su tipo → la global.
+#  Los alias cuentan como el comando real: /casa se resuelve a /home.
+#  /ffa siempre está permitido.
+# ─────────────────────────────────────────────────────────────────────────────
+commands:
+  global:
+    mode: WHITELIST
+    allowed:
+      - spawn
+      - msg
+      - r
+      - tell
+
+  kit-arenas:
+    mode: WHITELIST
+    allowed:
+      - spawn
+      - repair
+      - msg
+      - r
+
+  no-kit-arenas:
+    mode: WHITELIST
+    allowed:
+      - spawn
+      - repair
+      - mochila
+      - msg
+      - r
+
+  events:
+    mode: WHITELIST
+    allowed:
+      - spawn
+
+# ─────────────────────────────────────────────────────────────────────────────
+#  RECOMPENSA POR KILL (global)
+#
+#  Cada arena y cada evento puede tener la suya; esta se usa cuando no la tienen.
+#  Los comandos se ejecutan desde consola: %player% / %killer% es quien mata y
+#  %victim% quien muere.
+# ─────────────────────────────────────────────────────────────────────────────
+kill:
+  effects:
+    regeneration:
+      enabled: true
+      duration: 5
+      amplifier: 4
+    strength:
+      enabled: false
+      duration: 2
+      amplifier: 0
+  # Corazones que se curan al matar (2.0 = un corazón).
+  heal: 0
+  # Puntos de comida que se reponen al matar.
+  food: 4
+  # Apagar el fuego del que mata.
+  extinguish: true
+  commands: []
+
+hud:
+  enabled: true
+  # NONE | ACTIONBAR | SCOREBOARD | BOTH
+  # Las líneas se escriben en messages.yml, bajo hud.
+  type: SCOREBOARD
+
+  # La barra de arriba mientras hay un evento: lleva el reloj de la partida (lo que le
+  # queda al juggernaut para extraerse, la cuenta atrás, el viaje de vuelta al spawn).
+  # Su texto está en messages.yml, bajo bar.<fase o modo>; borra una línea de ahí y esa
+  # fase deja de pintar barra.
+  bossbar:
+    enabled: true
+    # PINK | BLUE | RED | GREEN | YELLOW | PURPLE | WHITE
+    # El modo puede cambiarlo sobre la marcha: el juggernaut la pone roja cuando le
+    # queda menos de medio minuto.
+    color: RED
+    # SOLID | SEGMENTED_6 | SEGMENTED_10 | SEGMENTED_12 | SEGMENTED_20
+    style: SOLID
+
+disconnect:
+  # Sacar del evento a quien se desconecta (y devolverle su inventario).
+  remove-from-event: true
+  # Lo mismo para las arenas permanentes.
+  remove-from-arena: true
+
+spectator:
+  # Al quedar eliminado de un evento, mirar en vez de salir.
+  enabled: true
+
+# ─────────────────────────────────────────────────────────────────────────────
+#  EVENTOS Y ARENAS A LA VEZ
+#
+#  Mientras hay un evento anunciado o en juego el servidor solo tiene un sitio
+#  donde pelear, y es el evento. Con close-arenas las arenas permanentes quedan
+#  cerradas hasta que termine: /ffa join <arena> avisa y el selector las marca.
+# ─────────────────────────────────────────────────────────────────────────────
+events:
+  # Cerrar las arenas permanentes mientras dure un evento.
+  close-arenas: true
+
+  # Sacar de TODAS las arenas a quien ya estaba dentro cuando arranca el evento.
+  # Por defecto no: cortarle un combate a alguien que no lo pidio es peor que
+  # dejarle acabar, y con close-arenas ya no puede entrar nadie mas.
+  # Del mapa que usa el evento se saca a la gente siempre, valga lo que valga esto:
+  # ahi no puede quedarse nadie que no este jugando el evento.
+  eject-arena-players: false
+
+  # Al terminar el evento, cerrar el PVP de la region del mapa mientras se vacia.
+  #
+  # No es por seguridad: dentro del plugin, con el evento terminado ya no se puede
+  # pegar. Es por el plugin de combate del servidor. Al acabar se teletransporta a
+  # todo el mundo al spawn, y DeluxeCombat devuelve a la arena a quien tenga marca de
+  # combate, asi que el ultimo golpe del evento bastaba para que el ganador
+  # reapareciera en el mapa vacio. Cerrando la bandera pvp de la region y esperando
+  # los segundos de end-delay, la marca caduca sola y el viaje sale limpio.
+  #
+  # La bandera se devuelve exactamente a como estaba en cuanto el evento se cierra.
+  pvp-off-on-end: true
+
+worldguard:
+  # Crear una región por arena al definir sus límites con pos1/pos2.
+  create-regions: true
+  region-prefix: 'siriusffa_'
+  # Poner la bandera PVP en ALLOW al crearla. Solo al crearla: si luego cambias
+  # las banderas a mano, SiriusFFA no las vuelve a tocar.
+  set-pvp-flag: true
+
+# ─────────────────────────────────────────────────────────────────────────────
+#  SONIDOS
+#
+#  'sonido;volumen;tono'. Se manda por el nombre de vanilla, no por el enum de
+#  Bukkit, para que no deje de sonar cuando el servidor actualice de version.
+#  Dejalo en '' o en 'none' para apagar uno suelto.
+# ─────────────────────────────────────────────────────────────────────────────
+sounds:
+  enabled: true
+
+  # Cada kill y cada muerte.
+  kill: 'entity.experience_orb.pickup;0.8;1.6'
+  death: 'entity.blaze.death;0.7;0.9'
+
+  # Cuenta atras: los ultimos segundos de la ronda del juggernaut.
+  countdown: 'block.note_block.pling;1;1.8'
+
+  # Hay juggernaut nuevo / el juggernaut ha caido.
+  juggernaut-new: 'entity.wither.spawn;0.5;1.4'
+  juggernaut-fallen: 'entity.wither.death;0.6;1.3'
+  # El juggernaut ha aguantado su ronda entera y gana el evento.
+  juggernaut-extracted: 'ui.toast.challenge_complete;1;1'
+
+  # Alguien ha llegado al ultimo nivel del gun game.
+  gungame-final: 'entity.ender_dragon.growl;0.5;1.6'
+
+  # Final del evento: uno para el ganador y otro para el resto.
+  event-win: 'ui.toast.challenge_complete;1;1'
+  event-end: 'block.note_block.bass;0.8;0.8'
+
+deluxecombat:
+  # SiriusFFA no lleva su propio sistema de combate: solo le pregunta a DeluxeCombat.
+  enabled: true
+  # Se consulta por PlaceholderAPI para no depender de una versión concreta de su API.
+  # Ajusta el marcador al que exponga tu versión de DeluxeCombat.
+  combat-placeholder: '%deluxecombat_incombat%'
+  true-values:
+    - 'true'
+    - 'yes'
+    - 'si'
+    - '1'
+
+# ─────────────────────────────────────────────────────────────────────────────
+#  EVENTOS AUTOMATICOS
+#
+#  Lanza un evento solo cada cierto tiempo, sin que nadie tenga que escribir
+#  /ffa start. Si no hay bastante gente o estamos fuera de horas no se pierde el
+#  turno: sale en cuanto se cumplan las condiciones.
+#
+#  /ffa next          cuánto queda para el próximo (lo puede ver cualquiera)
+#  /ffa schedule now  lanzarlo ya
+#  /ffa schedule skip saltar el turno
+# ─────────────────────────────────────────────────────────────────────────────
+scheduler:
+  enabled: false
+
+  # Cada cuánto sale uno. Se cuenta desde que termina el anterior.
+  interval: 2h
+
+  # Cuánto se espera desde que arranca el servidor hasta el primero.
+  first-delay: 30m
+
+  # Jugadores conectados mínimos para lanzarlo.
+  min-online: 6
+
+  # Horas del día (0-23) en las que se permite lanzar. Vacío = a cualquier hora.
+  # Ejemplo para las tardes: [16, 17, 18, 19, 20, 21, 22]
+  hours: []
+
+  # Elegir al azar en vez de seguir el orden de la rotación.
+  random: false
+
+  # Qué eventos entran y en qué orden. Vacío = todos los activados de events.yml.
+  rotation:
+    - juggernaut
+    - gun-game
+    - classic
+    - one-in-the-chamber
+
+stats:
+  enabled: true
+  # Cada cuántos segundos se vuelcan a la base de datos. Nada se guarda en caliente.
+  flush-seconds: 300
+
+# Base de datos de las estadísticas. Los inventarios NO pasan por aquí: van a
+# ficheros propios en plugins/SiriusFFA/inventarios, para poder recuperarlos a mano.
+storage:
+  # SQLITE (un fichero, sin configurar nada) o MYSQL.
+  type: SQLITE
+  host: localhost
+  port: 3306
+  database: minecraft
+  username: root
+  password: ''
+  ssl: false
+  pool-size: 10

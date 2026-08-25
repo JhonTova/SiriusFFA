@@ -1,0 +1,161 @@
+# ─────────────────────────────────────────────────────────────────────────────
+#  SiriusFFA — kits
+#
+#  Hay dos formas de tener un kit, y las dos valen:
+#
+#  1) DESDE EL JUEGO (la buena para kits de verdad)
+#       /ffa kitcreate ffa-normal
+#       te pones en el inventario exactamente lo que quieres que lleve
+#       /ffa kitsave ffa-normal
+#
+#     Los ítems se guardan tal cual, con toda su información: MMOItems, encantamientos
+#     personalizados, CustomModelData, PDC, atributos, texturas y lore. Por eso el
+#     contenido va en un bloque de texto ilegible ('contents'): es el ítem entero, no
+#     una receta para reconstruirlo (reconstruirlo es justo lo que pierde datos).
+#
+#  2) ESCRITO A MANO (para kits de vanilla puro, como los de aquí abajo)
+#       items:
+#         - 'material;cantidad;hueco;encantamiento:nivel,otro:nivel;nombre'
+#
+#     Todo menos el material se puede dejar en blanco: 'stone_sword' ya es un kit.
+#     El hueco va de 0 a 35 (0-8 es la barra rápida); si se deja vacío o está ocupado,
+#     el ítem cae en el primero que quede libre.
+#     La armadura va aparte, en 'armor', con las mismas reglas.
+#
+#     Un /ffa kitsave sobre uno de estos lo convierte en un kit guardado desde el
+#     juego y borra la lista escrita a mano: no pueden convivir las dos formas.
+#
+#  Lo que se puede tocar a mano en cualquiera de los dos:
+#    effects        lista de 'efecto;segundos;nivel' (0 segundos = mientras dure la partida)
+#                   ejemplo: 'resistance;0;1' o 'strength;0;0' para pegar más fuerte
+#    health-boost   corazones extra mientras lleva el kit. Cada nivel son 2 corazones,
+#                   así que 'health-boost: 5' deja al jugador con 20 corazones
+#    clear-before   vaciar el inventario antes de entregarlo (déjalo en true)
+#
+#  IMPORTANTE: SiriusFFA nunca escribe un atributo del jugador. La vida extra es un
+#  efecto de poción (health_boost) y no la vida máxima del atributo, a propósito: un
+#  atributo modificado se queda escrito en el jugador hasta que alguien lo devuelva a
+#  su sitio, y basta un apagón —o un HuskSync que sincronice antes de tiempo— para que
+#  se quede con esos corazones para siempre. Un efecto caduca solo.
+#
+#  Todos los kits llevan comida. En un evento de diez minutos sin comida la gente se
+#  queda sin poder correr antes de la mitad, y el que lleva el rol fuerte es el primero
+#  que lo nota.
+#
+#  UN ROL NO ES UN KIT: el juggernaut no tiene kit propio. Lleva el mismo que los demás
+#  y lo que le hace duro son los efectos de events.yml -> juggernaut -> effects.
+# ─────────────────────────────────────────────────────────────────────────────
+
+kits:
+
+  # El kit normal: el de las arenas y el de todo el que no lleva un rol especial.
+  ffa-normal:
+    items:
+      - 'iron_sword;1;0;sharpness:1,unbreaking:3'
+      - 'cooked_beef;16;1'
+      - 'golden_apple;2;2'
+    armor:
+      helmet: 'iron_helmet;1;;protection:1,unbreaking:3'
+      chestplate: 'iron_chestplate;1;;protection:1,unbreaking:3'
+      leggings: 'iron_leggings;1;;protection:1,unbreaking:3'
+      boots: 'iron_boots;1;;protection:1,unbreaking:3'
+    clear-before: true
+
+  # Aquí no hay kit de juggernaut a propósito: el juggernaut pelea con 'ffa-normal',
+  # igual que los demás, y lo que le hace duro son sus efectos —resistencia, corazones
+  # extra, fuerza— en events.yml -> juggernaut -> effects. Su vara se la da el modo.
+  # Si te sobra un kit 'juggernaut' de una versión vieja, puedes borrarlo: no se usa.
+
+  # ───────────────────────────────────────────────────────────────────────────
+  #  GUN GAME — un kit por nivel, y cada kill sube uno.
+  #
+  #  Se empieza a manos limpias y se acaba con netherita entera. Pasar del último
+  #  nivel gana la partida, así que la escalera es el marcador: mirar lo que lleva
+  #  puesto el de enfrente ya te dice por dónde va.
+  # ───────────────────────────────────────────────────────────────────────────
+
+  gun-1:
+    items:
+      - 'cooked_beef;8;1'
+    clear-before: true
+
+  gun-2:
+    items:
+      - 'wooden_sword;1;0'
+      - 'cooked_beef;8;1'
+    clear-before: true
+
+  gun-3:
+    items:
+      - 'stone_sword;1;0'
+      - 'cooked_beef;8;1'
+    armor:
+      helmet: 'leather_helmet'
+      boots: 'leather_boots'
+    clear-before: true
+
+  gun-4:
+    items:
+      - 'iron_sword;1;0'
+      - 'cooked_beef;8;1'
+    armor:
+      helmet: 'leather_helmet'
+      chestplate: 'leather_chestplate'
+      leggings: 'leather_leggings'
+      boots: 'leather_boots'
+    clear-before: true
+
+  gun-5:
+    items:
+      - 'iron_sword;1;0;sharpness:1'
+      - 'cooked_beef;8;1'
+    armor:
+      helmet: 'chainmail_helmet'
+      chestplate: 'chainmail_chestplate'
+      leggings: 'chainmail_leggings'
+      boots: 'chainmail_boots'
+    clear-before: true
+
+  gun-6:
+    items:
+      - 'diamond_sword;1;0'
+      - 'cooked_beef;8;1'
+    armor:
+      helmet: 'iron_helmet;1;;protection:1'
+      chestplate: 'iron_chestplate;1;;protection:1'
+      leggings: 'iron_leggings;1;;protection:1'
+      boots: 'iron_boots;1;;protection:1'
+    clear-before: true
+
+  gun-7:
+    items:
+      - 'diamond_sword;1;0;sharpness:2'
+      - 'cooked_beef;8;1'
+      - 'golden_apple;1;2'
+    armor:
+      helmet: 'diamond_helmet;1;;protection:2'
+      chestplate: 'diamond_chestplate;1;;protection:2'
+      leggings: 'diamond_leggings;1;;protection:2'
+      boots: 'diamond_boots;1;;protection:2'
+    clear-before: true
+
+  gun-8:
+    items:
+      - 'netherite_sword;1;0;sharpness:3,fire_aspect:1,unbreaking:3'
+      - 'cooked_beef;8;1'
+      - 'golden_apple;2;2'
+    armor:
+      helmet: 'netherite_helmet;1;;protection:2,unbreaking:3'
+      chestplate: 'netherite_chestplate;1;;protection:2,unbreaking:3'
+      leggings: 'netherite_leggings;1;;protection:2,unbreaking:3'
+      boots: 'netherite_boots;1;;protection:2,unbreaking:3'
+    clear-before: true
+
+  # One in the Chamber: una flecha mata de un tiro, así que no lleva armadura. El hacha
+  # es para cuando te quedas sin munición y toca acercarse.
+  oitc:
+    items:
+      - 'bow;1;0'
+      - 'stone_axe;1;1'
+      - 'cooked_beef;8;2'
+    clear-before: true

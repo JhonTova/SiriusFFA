@@ -1,0 +1,43 @@
+# ─────────────────────────────────────────────────────────────────────────────
+#  SiriusFFA — arenas
+#
+#  Este fichero lo escribe el propio plugin con los comandos de administración;
+#  puedes editarlo a mano, pero hazlo con el servidor apagado o recarga después
+#  con /ffa reload.
+#
+#  Cómo se crea una arena:
+#    1. /ffa create arena-1     (queda seleccionada para editarla)
+#    2. /ffa pos1 y /ffa pos2   en dos esquinas opuestas
+#                               al marcar la segunda se guardan los límites y se crea
+#                               la región de WorldGuard con esas mismas coordenadas
+#    3. /ffa setspawn arena-1   y tantos /ffa addspawn como quieras
+#    4. /ffa setkit arena-1 pvp (o déjala sin kit para que jueguen con lo suyo)
+#    5. /ffa setlobby arena-1   fuera del cuboide, si es arena de eventos
+#    6. /ffa privacy arena-1 closed   si el mapa es solo para eventos
+#
+#  El orden 1-2 da igual: si marcas las esquinas antes, /ffa create las usa. Para
+#  editar otra arena después, /ffa select <arena>.
+#
+#  Claves de cada arena:
+#    display-name              nombre bonito para mensajes y menús
+#    enabled                   false la cierra sin borrarla
+#    kit-enabled / kit         con kit se guarda y se vacía el inventario del jugador
+#    require-empty-inventory   exigir entrar sin nada encima (recomendado con kit)
+#    max-players               0 = sin tope
+#    bounds                    lo pone /ffa create o /ffa bounds
+#    spawns                    puntos de aparición; con varios no se reaparece encima
+#    lobby                     sala de espera del evento, FUERA del cuboide
+#    access                    OPEN  = cualquiera entra con /ffa join <arena>
+#                              CLOSED = reservada a los eventos: no sale en /ffa join,
+#                              ni en el tabulador, ni en el selector.
+#                              Se cambia con /ffa privacy <arena> open|closed.
+#                              (la clave vieja for-events: true sigue valiendo como CLOSED)
+#    spawn-protection          segundos de invulnerabilidad al aparecer
+#    keep-drops                dejar que caigan los ítems al morir (solo sin kit)
+#    icon                      material del icono en el menú
+#    commands / kill           política y recompensa propias (si faltan, heredan)
+# ─────────────────────────────────────────────────────────────────────────────
+
+lobby: ''
+
+arenas: {}
