@@ -317,6 +317,7 @@ public final class FFAEvent {
         }
         player.setGameMode(GameMode.SURVIVAL);
         teleportToSpawn(player, null);
+        plugin.cloak().refresh(player);
     }
 
     public void redress(Player player) {
@@ -325,6 +326,7 @@ public final class FFAEvent {
         }
         plugin.inventories().prepare(player, false);
         dress(player);
+        plugin.cloak().refresh(player);
     }
 
     private void dress(Player player) {
@@ -451,6 +453,8 @@ public final class FFAEvent {
         if (plugin.config().pvpOffOnEnd()) {
             previousPvp = plugin.worldGuard().closePvp(arena);
         }
+        // Con el evento decidido se acabó el escondite: todos se ven para el resumen.
+        plugin.cloak().refreshAll();
         // Con el evento decidido, nadie debería morirse esperando el viaje de vuelta.
         for (Player player : players()) {
             player.setFireTicks(0);

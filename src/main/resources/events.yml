@@ -9,7 +9,8 @@
 #
 #  Claves comunes a todos:
 #    mode                     el modo que manda: classic, juggernaut, gun-game,
-#                             one-in-the-chamber (o el que registres tú)
+#                             one-in-the-chamber, last-standing (o el que
+#                             registres tú)
 #    arena                    id de una arena de arenas.yml. Si el mapa es solo para el
 #                             evento, cierrala con /ffa privacy <arena> closed: asi no
 #                             sale en /ffa join ni en el selector. Mientras el evento
@@ -329,3 +330,83 @@ events:
       winner:
         commands:
           - 'eco give %player% 8000'
+
+  # ───────────────────────────────────────────────────────────────────────────
+  #  ULTIMO EN PIE
+  #
+  #  Aquí no se reaparece. El que muere pasa a espectador y se queda mirando
+  #  desde arriba hasta que el evento termina, y gana el último que siga vivo.
+  #  Es el mismo evento que los demás —cuenta atrás, sala de espera, kit, premio—
+  #  cambiando solo lo que pasa al morir.
+  #
+  #  Para que un eliminado se quede mirando hacen falta las dos llaves:
+  #  'spectators: true' aquí y 'spectator.enabled: true' en config.yml. Si
+  #  cualquiera de las dos está en false se le saca del evento y se le devuelve
+  #  su inventario en cuanto cae, y el evento sigue igual.
+  # ───────────────────────────────────────────────────────────────────────────
+  last-standing:
+    enabled: true
+    display-name: 'Ultimo en Pie'
+    mode: last-standing
+    arena: event-arena
+
+    min-players: 2
+    max-players: 40
+    countdown: 30
+    wait-timeout: 180
+    end-delay: 30
+
+    # Tope de la partida. Si se acaba con varios vivos, mira 'time-up-winner-by-kills'.
+    max-time: 20m
+
+    require-empty-inventory: true
+    allow-leave: true
+    # Sin esto el que muere sale del evento en vez de quedarse mirando.
+    spectators: true
+
+    # Vidas de cada uno. Con 1 se elimina a la primera, que es el battle royale de
+    # siempre; súbelo y cada muerte gasta una y se reaparece con el kit hasta que se
+    # acaben. Las vidas que quedan se ven en el marcador.
+    lives: 1
+
+    # Cuando quedan estos vivos o menos, se avisa por el chat. Al quedar dos, además,
+    # sale el título del duelo. 0 = no avisar.
+    announce-from: 3
+
+    # Al pasar este tiempo de partida, todos los que sigan vivos empiezan a brillar.
+    # Es lo que impide que dos se escondan en una esquina hasta que se acabe el
+    # tiempo. Vacío o 0 = nunca.
+    reveal-after: 8m
+
+    # Si se acaba el tiempo con varios vivos, gana el que más kills lleve. En empate no
+    # gana nadie. Con false, tiempo agotado = sin ganador.
+    time-up-winner-by-kills: true
+
+    kill:
+      effects:
+        regeneration:
+          enabled: true
+          duration: 5
+          amplifier: 4
+      food: 6
+      extinguish: true
+
+    # Todos iguales: aquí no hay roles, lo que decide es quién queda vivo.
+    effects:
+      normal: []
+
+    kits:
+      normal: ffa-normal
+
+    commands:
+      mode: WHITELIST
+      allowed:
+        - spawn
+
+    rewards:
+      winner:
+        commands:
+          - 'eco give %player% 12000'
+      participation:
+        commands:
+          - 'eco give %player% 1000'

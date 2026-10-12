@@ -24,6 +24,9 @@ public final class Stat {
     public static final String OITC_KILLS = "oitc_kills";
     public static final String OITC_WINS = "oitc_wins";
 
+    public static final String LASTSTANDING_KILLS = "laststanding_kills";
+    public static final String LASTSTANDING_WINS = "laststanding_wins";
+
     public static final List<String> PROFILE = List.of(
             KILLS, DEATHS, BEST_STREAK, EVENTS_PLAYED, EVENT_WINS, JUGGERNAUT_WINS, PLAYTIME);
 

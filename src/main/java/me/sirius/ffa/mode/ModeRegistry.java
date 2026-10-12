@@ -14,6 +14,7 @@ public final class ModeRegistry {
         register("juggernaut", JuggernautMode::new);
         register("gun-game", GunGameMode::new);
         register("one-in-the-chamber", OneInTheChamberMode::new);
+        register("last-standing", LastStandingMode::new);
     }
 
     public void register(String id, FFAMode.Factory factory) {
@@ -41,6 +42,8 @@ public final class ModeRegistry {
             case "gungame" -> "gun-game";
             case "oitc", "oneinthechamber", "one-in-chamber" -> "one-in-the-chamber";
             case "jugger" -> "juggernaut";
+            case "lastman", "last-man", "last-man-standing", "lastmanstanding", "laststanding",
+                 "ultimo-en-pie", "battle-royale", "br" -> "last-standing";
             default -> clean;
         };
     }

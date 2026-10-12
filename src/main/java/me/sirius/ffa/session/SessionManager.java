@@ -179,6 +179,7 @@ public final class SessionManager {
         teleport(player, arena.spawn());
         protectSpawn(player, arena.spawnProtection());
 
+        plugin.cloak().refresh(player);
         plugin.stats().add(player.getUniqueId(), Stat.ARENAS_JOINED, 1);
         plugin.messages().send(player, "join.arena", Map.of(
                 "arena", arena.displayName(),
@@ -201,6 +202,7 @@ public final class SessionManager {
         event.sendToLobby(player);
 
         event.add(player);
+        plugin.cloak().refresh(player);
         plugin.messages().send(player, "join.event", event.data(Map.of()));
         plugin.clock().ensureRunning();
     }
@@ -249,6 +251,7 @@ public final class SessionManager {
             event.remove(player.getUniqueId());
         }
 
+        plugin.cloak().clear(player);
         plugin.hud().clear(player, session);
         saveStats(session);
 
@@ -364,9 +367,23 @@ public final class SessionManager {
 
     public void respawn(Player player) {
         FFASession session = sessions.get(player.getUniqueId());
-        if (session == null || session.spectator()) {
+        if (session == null) {
             return;
         }
+        if (session.spectator()) {
+            // Se le puso en espectador estando muerto, y reaparecer le devuelve a
+            // supervivencia: un eliminado tiene que volver a mirar, no a pelear.
+            player.setGameMode(GameMode.SPECTATOR);
+            return;
+        }
+        reappear(player, session);
+
+        // Morir borra todos los efectos, así que la invisibilidad se repone aquí. La
+        // sesión se vuelve a buscar a propósito: reappear() puede haberla cerrado.
+        plugin.cloak().refresh(player);
+    }
+
+    private void reappear(Player player, FFASession session) {
         FFAEvent event = plugin.events().active();
 
         if (session.inEvent() && event != null) {

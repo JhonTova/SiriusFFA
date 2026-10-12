@@ -172,8 +172,38 @@ disconnect:
   remove-from-arena: true
 
 spectator:
-  # Al quedar eliminado de un evento, mirar en vez de salir.
+  # Al quedar eliminado de un evento, mirar en vez de salir. Es lo que hace que en
+  # 'ultimo en pie' el muerto se quede viendo la partida hasta que gane alguien; en
+  # false se le saca y se le devuelve su inventario en cuanto cae.
   enabled: true
+
+# ──────────────────────────────────────────────────────────────────────────────
+#  INVISIBILIDAD
+#
+#  Nadie sabe a quién está pegando: mientras dura, los que están dentro llevan el
+#  efecto de poción de invisibilidad, y un jugador invisible no enseña su nombre.
+#  Es SOLO el efecto: aquí no se toca ningún atributo del jugador.
+#
+#  Se enciende y se apaga en caliente con /ffa invisible true|false, incluso con la
+#  pelea empezada, y lo que elijas se guarda aquí.
+#
+#  Aviso: la armadura de un invisible se sigue viendo (es así en vanilla). El nombre
+#  no, que es lo que se quería ocultar. Si prefieres que no se vea nada, usa un kit
+#  sin armadura.
+# ──────────────────────────────────────────────────────────────────────────────
+invisible:
+  enabled: false
+
+  # Dónde se aplica.
+  events: true
+  arenas: true
+
+  # Cuánto dura el efecto como mucho. El plugin lo renueva solo mientras el jugador
+  # siga dentro, así que este número no lo corta: es el tope de lo que le puede
+  # quedar encima a alguien que se caiga del servidor sin pasar por la salida, para
+  # que se le acabe solo en vez de quedarse invisible para siempre.
+  # Se admite 30s, 15m, 1h. Mínimo 1m, máximo 1h.
+  duration: 15m
 
 # ─────────────────────────────────────────────────────────────────────────────
 #  EVENTOS Y ARENAS A LA VEZ
@@ -239,6 +269,11 @@ sounds:
   # Alguien ha llegado al ultimo nivel del gun game.
   gungame-final: 'entity.ender_dragon.growl;0.5;1.6'
 
+  # Ultimo en pie: uno menos, quedan dos, y el destape que hace brillar a los vivos.
+  laststanding-out: 'block.anvil.land;0.6;1.4'
+  laststanding-duel: 'entity.ender_dragon.growl;0.6;1.5'
+  laststanding-reveal: 'block.beacon.activate;0.7;1.2'
+
   # Final del evento: uno para el ganador y otro para el resto.
   event-win: 'ui.toast.challenge_complete;1;1'
   event-end: 'block.note_block.bass;0.8;0.8'
@@ -291,6 +326,7 @@ scheduler:
     - gun-game
     - classic
     - one-in-the-chamber
+    - last-standing
 
 stats:
   enabled: true

@@ -37,7 +37,8 @@ public final class FFACommand implements TabExecutor {
     private static final List<String> ADMIN_SUBS =
             List.of("start", "stop", "schedule", "create", "delete", "bounds", "pos1", "pos2",
                     "select", "setspawn", "addspawn", "clearspawns", "setlobby", "setkit",
-                    "privacy", "kitcreate", "kitsave", "kitdelete", "kitlist", "reload");
+                    "privacy", "invisible", "kitcreate", "kitsave", "kitdelete", "kitlist",
+                    "reload");
 
     private final SiriusFFA plugin;
 
@@ -81,6 +82,7 @@ public final class FFACommand implements TabExecutor {
             case "setlobby" -> setLobby(sender, args);
             case "setkit" -> setKit(sender, args);
             case "privacy", "privacity", "privacidad" -> privacy(sender, args);
+            case "invisible", "invis", "invisibilidad" -> invisible(sender, args);
             case "kitcreate" -> kitCreate(sender, args);
             case "kitsave" -> kitSave(sender, args);
             case "kitdelete" -> kitDelete(sender, args);
@@ -628,6 +630,63 @@ public final class FFACommand implements TabExecutor {
         return arena.reserved() ? "access.closed" : "access.open";
     }
 
+    private void invisible(CommandSender sender, String[] args) {
+        if (!allowed(sender, "siriusffa.invisible")) {
+            return;
+        }
+        Map<String, String> data = Map.of(
+                "players", String.valueOf(plugin.sessions().all().size()),
+                "duration", Durations.words(plugin.config().invisibleSeconds()),
+                "where", plugin.messages().get(where()));
+
+        if (args.length < 2) {
+            plugin.messages().sendRich(sender, plugin.cloak().enabled()
+                    ? "invisible.current-on" : "invisible.current-off", data);
+            return;
+        }
+        Boolean value = flag(args[1]);
+        if (value == null) {
+            plugin.messages().send(sender, "commands.usage-invisible");
+            return;
+        }
+        plugin.config().invisible(value);
+
+        // El repaso es inmediato: si ya se están pegando, desaparecen (o reaparecen) en
+        // el mismo instante, sin esperar al siguiente kit ni a la siguiente muerte.
+        int touched = plugin.cloak().refreshAll();
+
+        plugin.messages().sendRichLines(sender, value ? "invisible.turned-on" : "invisible.turned-off",
+                Map.of("players", String.valueOf(touched),
+                        "duration", data.get("duration"),
+                        "where", data.get("where")));
+
+        // Solo se avisa a quien de verdad le afecta: con invisible.arenas apagado, a los
+        // de una arena no les ha pasado nada.
+        for (FFASession session : plugin.sessions().all()) {
+            Player player = Bukkit.getPlayer(session.player());
+            if (player != null && plugin.cloak().covers(session)) {
+                plugin.messages().send(player, value ? "invisible.player-on" : "invisible.player-off");
+            }
+        }
+    }
+
+    private String where() {
+        boolean events = plugin.config().invisibleInEvents();
+        boolean arenas = plugin.config().invisibleInArenas();
+        if (events && arenas) {
+            return "invisible.where-both";
+        }
+        return events ? "invisible.where-events" : "invisible.where-arenas";
+    }
+
+    private static Boolean flag(String raw) {
+        return switch (raw.toLowerCase(Locale.ROOT)) {
+            case "true", "on", "si", "sí", "1", "activar", "encender" -> Boolean.TRUE;
+            case "false", "off", "no", "0", "desactivar", "apagar" -> Boolean.FALSE;
+            default -> null;
+        };
+    }
+
 
     private void kitCreate(CommandSender sender, String[] args) {
         Player player = player(sender);
@@ -738,6 +797,7 @@ public final class FFACommand implements TabExecutor {
                 case "join", "entrar" -> filter(withEvent(sender.hasPermission("siriusffa.admin")
                         ? plugin.arenas().ids()
                         : plugin.arenas().joinableIds()), args[1]);
+                case "invisible", "invis", "invisibilidad" -> filter(List.of("true", "false"), args[1]);
                 case "info", "delete", "borrar", "bounds", "limites", "select", "seleccionar",
                      "setspawn", "addspawn", "clearspawns", "setkit", "setlobby",
                      "privacy", "privacity", "privacidad" -> filter(plugin.arenas().ids(), args[1]);

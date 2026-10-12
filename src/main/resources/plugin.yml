@@ -4,7 +4,7 @@ main: me.sirius.ffa.SiriusFFA
 api-version: '1.21'
 author: Sirius
 website: https://github.com/JhonTova
-description: 'Arenas FFA permanentes y eventos temporales (juggernaut, gun game, one in the chamber) para servidores survival.'
+description: 'Arenas FFA permanentes y eventos temporales (juggernaut, gun game, one in the chamber, ultimo en pie) para servidores survival.'
 
 # Sin SiriusCore.jar, Bukkit ni intenta cargar este plugin.
 depend:
@@ -20,7 +20,7 @@ softdepend:
 commands:
   ffa:
     description: Arenas y eventos FFA.
-    usage: /ffa [join|leave|list|info|stats|top|start|stop|create|delete|pos1|pos2|setspawn|kitcreate|kitsave|reload]
+    usage: /ffa [join|leave|list|info|stats|top|start|stop|invisible|create|delete|pos1|pos2|setspawn|kitcreate|kitsave|reload]
     aliases: [arena, ffa1]
 
 permissions:
@@ -50,6 +50,7 @@ permissions:
       siriusffa.edit: true
       siriusffa.kit: true
       siriusffa.event: true
+      siriusffa.invisible: true
       siriusffa.start: true
       siriusffa.stop: true
       siriusffa.reload: true
@@ -70,6 +71,9 @@ permissions:
     default: op
   siriusffa.event:
     description: Gestionar eventos.
+    default: op
+  siriusffa.invisible:
+    description: Encender y apagar la invisibilidad del FFA.
     default: op
   siriusffa.start:
     description: Lanzar un evento.

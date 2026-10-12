@@ -79,6 +79,7 @@ commands:
   usage-select: '<prefix><gray>ᴜsᴏ: <white>/ffa select <arena><gray>. ᴅᴇᴊᴀ ᴇsᴀ ᴀʀᴇɴᴀ ᴇɴ ᴇᴅɪᴄɪᴏɴ ᴘᴀʀᴀ ʟᴀs ᴇsǫᴜɪɴᴀs.'
   usage-kitdelete: '<prefix><gray>ᴜsᴏ: <white>/ffa kitdelete <id>'
   usage-privacy: '<prefix><gray>ᴜsᴏ: <white>/ffa privacy <arena> open|closed<newline><gray><white>open<gray> = ᴄᴜᴀʟǫᴜɪᴇʀᴀ ᴘᴜᴇᴅᴇ ᴇɴᴛʀᴀʀ ᴄᴏɴ /ffa join. <white>closed<gray> = sᴏʟᴏ ʟᴀ ᴜsᴀɴ ʟᴏs ᴇᴠᴇɴᴛᴏs.'
+  usage-invisible: '<prefix><gray>ᴜsᴏ: <white>/ffa invisible true|false<newline><gray><white>true<gray> = ᴛᴏᴅᴏs ʟᴏs ǫᴜᴇ ᴇsᴛᴀɴ ᴅᴇɴᴛʀᴏ sᴇ ᴠᴜᴇʟᴠᴇɴ ɪɴᴠɪsɪʙʟᴇs. <white>false<gray> = ᴠᴜᴇʟᴠᴇɴ ᴀ ᴠᴇʀsᴇ.'
   usage-schedule: '<prefix><gray>ᴜsᴏ: <white>/ffa schedule now<gray> ᴘᴀʀᴀ ʟᴀɴᴢᴀʀʟᴏ ʏᴀ ᴏ <white>/ffa schedule skip<gray> ᴘᴀʀᴀ sᴀʟᴛᴀʀ ᴇʟ ᴛᴜʀɴᴏ.'
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -227,6 +228,7 @@ bar:
   classic: '<gray>ʟɪᴅᴇʀ <white><leader> <dark_gray>| <gray>ǫᴜᴇᴅᴀɴ <white><remaining>'
   gun-game: '<gray>ᴠᴀ ɢᴀɴᴀɴᴅᴏ <white><leader> <dark_gray>| <gray>ɴɪᴠᴇʟ <white><level><gray>/<white><total> <dark_gray>| <gray>ǫᴜᴇᴅᴀɴ <white><remaining>'
   one-in-the-chamber: '<gray>ᴜɴᴀ ꜰʟᴇᴄʜᴀ, ᴜɴᴀ ᴠɪᴅᴀ <dark_gray>| <gray>ᴠɪᴠᴏs <white><alive>'
+  last-standing: '<gray>ᴠɪᴠᴏs <white><alive><gray>/<white><total> <dark_gray>| <gray>ǫᴜᴇᴅᴀɴ <white><remaining>'
 
 # ─────────────────────────────────────────────────────────────────────────────
 #  MODOS
@@ -307,6 +309,37 @@ gungame:
     - 'ᴇsᴘᴀᴅᴀ ᴅᴇ ɴᴇᴛʜᴇʀɪᴛᴀ ɪɪ'
     - 'ᴇsᴘᴀᴅᴀ ᴅᴇ ɴᴇᴛʜᴇʀɪᴛᴀ ɪᴠ'
 
+laststanding:
+  # Al empezar: las reglas, que en este modo son toda la gracia.
+  rules: '<newline><gradient:#ff512f:#f09819><bold>ᴜʟᴛɪᴍᴏ ᴇɴ ᴘɪᴇ</bold></gradient><newline><gray>ᴇɴᴛʀᴀɴ <white><players><gray> ʏ sᴏʟᴏ sᴀʟᴇ ᴜɴᴏ<newline><gray>ᴀǫᴜɪ ɴᴏ sᴇ ʀᴇᴀᴘᴀʀᴇᴄᴇ: ᴇʟ ǫᴜᴇ ᴍᴜᴇʀᴇ sᴇ ǫᴜᴇᴅᴀ ᴍɪʀᴀɴᴅᴏ<newline>'
+  rules-lives: '<newline><gradient:#ff512f:#f09819><bold>ᴜʟᴛɪᴍᴏ ᴇɴ ᴘɪᴇ</bold></gradient><newline><gray>ᴇɴᴛʀᴀɴ <white><players><gray> ʏ sᴏʟᴏ sᴀʟᴇ ᴜɴᴏ<newline><gray>ᴄᴀᴅᴀ ᴜɴᴏ ᴛɪᴇɴᴇ <white><lives><gray> ᴠɪᴅᴀs; ᴀʟ ɢᴀsᴛᴀʀʟᴀs ᴛᴇ ǫᴜᴇᴅᴀs ᴍɪʀᴀɴᴅᴏ<newline>'
+  start-title: '<gold><bold>ᴜʟᴛɪᴍᴏ ᴇɴ ᴘɪᴇ</bold>'
+  start-subtitle: '<gray>sᴏʟᴏ sᴀʟᴇ ᴜɴᴏ ᴅᴇ <white><players>'
+
+  # Solo se ve en los eventos con mas de una vida por jugador.
+  lives-left: '<prefix><red>ᴛᴇ ǫᴜᴇᴅᴀɴ <white><lives><red> ᴠɪᴅᴀs. <gray>ᴀ ʟᴀ ᴜʟᴛɪᴍᴀ ᴛᴇ ǫᴜᴇᴅᴀs ᴍɪʀᴀɴᴅᴏ.'
+
+  # Uno menos. <place> es el puesto en el que se queda y <alive> los que siguen vivos.
+  eliminated: '<dark_gray>» <white><killer> <gray>ᴇʟɪᴍɪɴᴏ ᴀ <white><player> <dark_gray>(<gray>ᴘᴜᴇsᴛᴏ <white>#<place><dark_gray>) <dark_gray>· <gray>ᴠɪᴠᴏs <white><alive>'
+  fell: '<dark_gray>» <white><player> <gray>ᴄᴀʏᴏ sᴏʟᴏ <dark_gray>(<gray>ᴘᴜᴇsᴛᴏ <white>#<place><dark_gray>) <dark_gray>· <gray>ᴠɪᴠᴏs <white><alive>'
+  out-title: '<red><bold>ᴇʟɪᴍɪɴᴀᴅᴏ</bold>'
+  out-subtitle: '<gray>ᴘᴜᴇsᴛᴏ <white>#<place><gray> ᴅᴇ <white><total>'
+
+  # Avisos del tramo final (events.yml -> announce-from).
+  remaining: '<prefix><yellow>ǫᴜᴇᴅᴀɴ <white><alive><yellow> ᴇɴ ᴘɪᴇ.'
+  duel-title: '<red><bold>ᴜɴᴏ ᴄᴏɴᴛʀᴀ ᴜɴᴏ</bold>'
+  duel-subtitle: '<gray>ᴇʟ ǫᴜᴇ ǫᴜᴇᴅᴇ ᴠɪᴠᴏ ɢᴀɴᴀ'
+
+  # El destape (events.yml -> reveal-after): a partir de ahi los vivos brillan.
+  reveal: '<prefix><gold>sᴇ ᴀᴄᴀʙᴏ ᴇsᴄᴏɴᴅᴇʀsᴇ<gray>: ᴛᴏᴅᴏ ᴇʟ ǫᴜᴇ sɪɢᴜᴇ ᴠɪᴠᴏ ʙʀɪʟʟᴀ.'
+
+  winner: '<newline><gradient:#ff512f:#f09819><bold>ᴜʟᴛɪᴍᴏ ᴇɴ ᴘɪᴇ</bold></gradient><newline><white><player><gray> ᴇs ᴇʟ ᴜɴɪᴄᴏ ǫᴜᴇ sɪɢᴜᴇ ᴅᴇ ᴘɪᴇ<newline><gray>ᴅᴇ <white><total><gray> ᴊᴜɢᴀᴅᴏʀᴇs, ᴄᴏɴ <white><kills><gray> ᴋɪʟʟs ᴇɴ <white><duration><newline>'
+  nobody: '<prefix><yellow>ɴᴏ ǫᴜᴇᴅᴀ ɴᴀᴅɪᴇ ᴇɴ ᴘɪᴇ: ᴇʟ ᴇᴠᴇɴᴛᴏ ᴛᴇʀᴍɪɴᴀ sɪɴ ɢᴀɴᴀᴅᴏʀ.'
+
+  # Se acabo el tiempo con varios vivos (events.yml -> time-up-winner-by-kills).
+  time-up: '<prefix><yellow>sᴇ ᴀᴄᴀʙᴏ ᴇʟ ᴛɪᴇᴍᴘᴏ ᴄᴏɴ <white><alive><yellow> ᴇɴ ᴘɪᴇ. <gray>ɢᴀɴᴀ <white><player><gray>, ǫᴜᴇ ᴇs ᴇʟ ǫᴜᴇ ᴍᴀs ᴋɪʟʟs ʟʟᴇᴠᴀ <dark_gray>(<white><kills><dark_gray>)'
+  time-up-none: '<prefix><yellow>sᴇ ᴀᴄᴀʙᴏ ᴇʟ ᴛɪᴇᴍᴘᴏ ᴄᴏɴ <white><alive><yellow> ᴇɴ ᴘɪᴇ ʏ ɴɪɴɢᴜɴᴏ ᴅᴇsᴛᴀᴄᴀ: sɪɴ ɢᴀɴᴀᴅᴏʀ.'
+
 oitc:
   lives-left: '<prefix><red>ᴛᴇ ǫᴜᴇᴅᴀɴ <white><lives><red> ᴠɪᴅᴀs.'
   eliminated: '<prefix><red><player> <gray>sᴇ ǫᴜᴇᴅᴏ sɪɴ ᴠɪᴅᴀs.'
@@ -324,6 +357,26 @@ kit:
   not-found: '<prefix><red>ᴇʟ ᴋɪᴛ <white><kit><red> ɴᴏ ᴇxɪsᴛᴇ.'
   empty-inventory: '<prefix><red>ᴛɪᴇɴᴇs ᴇʟ ɪɴᴠᴇɴᴛᴀʀɪᴏ ᴠᴀᴄɪᴏ: ɴᴏ ʜᴀʏ ɴᴀᴅᴀ ǫᴜᴇ ɢᴜᴀʀᴅᴀʀ.'
   list: '<prefix><gray>ᴋɪᴛs (<white><total><gray>): <white><kits>'
+
+# ─────────────────────────────────────────────────────────────────────────────
+#  INVISIBILIDAD
+# ─────────────────────────────────────────────────────────────────────────────
+invisible:
+  where-both: '<white>ᴀʀᴇɴᴀs ʏ ᴇᴠᴇɴᴛᴏs'
+  where-events: '<white>sᴏʟᴏ ᴇɴ ʟᴏs ᴇᴠᴇɴᴛᴏs'
+  where-arenas: '<white>sᴏʟᴏ ᴇɴ ʟᴀs ᴀʀᴇɴᴀs'
+
+  current-on: '<prefix><green>ɪɴᴠɪsɪʙɪʟɪᴅᴀᴅ ᴇɴᴄᴇɴᴅɪᴅᴀ <gray>(<where><gray>). <gray>ᴇʟ ᴇꜰᴇᴄᴛᴏ ᴅᴜʀᴀ ᴄᴏᴍᴏ ᴍᴜᴄʜᴏ <white><duration><gray>. <gray>ᴀᴘᴀɢᴀʟᴀ ᴄᴏɴ <white>/ffa invisible false'
+  current-off: '<prefix><gray>ʟᴀ ɪɴᴠɪsɪʙɪʟɪᴅᴀᴅ ᴇsᴛᴀ ᴀᴘᴀɢᴀᴅᴀ. <gray>ᴇɴᴄɪᴇɴᴅᴇʟᴀ ᴄᴏɴ <white>/ffa invisible true'
+
+  turned-on:
+    - '<prefix><green>ɪɴᴠɪsɪʙɪʟɪᴅᴀᴅ ᴇɴᴄᴇɴᴅɪᴅᴀ <gray>(<where><gray>).'
+    - '<gray>ᴀᴄᴀʙᴀɴ ᴅᴇ ᴅᴇsᴀᴘᴀʀᴇᴄᴇʀ <white><players><gray> ᴊᴜɢᴀᴅᴏʀ(ᴇs). ᴇʟ ᴇꜰᴇᴄᴛᴏ ᴅᴜʀᴀ <white><duration><gray> ʏ sᴇ ʀᴇɴᴜᴇᴠᴀ ᴍɪᴇɴᴛʀᴀs sɪɢᴀɴ ᴅᴇɴᴛʀᴏ.'
+  turned-off:
+    - '<prefix><gray>ɪɴᴠɪsɪʙɪʟɪᴅᴀᴅ ᴀᴘᴀɢᴀᴅᴀ. ᴛᴏᴅᴏs ᴠᴜᴇʟᴠᴇɴ ᴀ ᴠᴇʀsᴇ.'
+
+  player-on: '<prefix><green>ᴛᴇ ʜᴀs ᴠᴜᴇʟᴛᴏ ɪɴᴠɪsɪʙʟᴇ.<newline><gray>ɴᴀᴅɪᴇ ᴠᴇ ᴛᴜ ɴᴏᴍʙʀᴇ, ʏ ᴛᴜ ᴛᴀᴍᴘᴏᴄᴏ ᴇʟ sᴜʏᴏ: ᴘᴇɢᴀ ᴀ ʟᴏ ǫᴜᴇ sᴇ ᴍᴜᴇᴠᴀ.'
+  player-off: '<prefix><gray>sᴇ ᴀᴄᴀʙᴏ ᴇʟ ᴇsᴄᴏɴᴅɪᴛᴇ: ᴠᴜᴇʟᴠᴇɴ ᴀ ᴠᴇʀᴛᴇ.'
 
 # ─────────────────────────────────────────────────────────────────────────────
 #  ESTADISTICAS
@@ -381,6 +434,7 @@ help:
     - '<white>/ffa setspawn [arena] <dark_gray>· <white>/ffa addspawn [arena] <dark_gray>· <white>/ffa clearspawns [arena]'
     - '<white>/ffa setkit <arena> <kit> <dark_gray>· <white>/ffa setlobby [arena]'
     - '<white>/ffa privacy <arena> open|closed <dark_gray>— <gray>ᴄᴇʀʀᴀʀ ᴜɴ ᴍᴀᴘᴀ ᴀ ʟᴏs ᴇᴠᴇɴᴛᴏs'
+    - '<white>/ffa invisible true|false <dark_gray>— <gray>ɪɴᴠɪsɪʙɪʟɪᴅᴀᴅ ᴘᴀʀᴀ ᴛᴏᴅᴏs ʟᴏs ǫᴜᴇ ᴇsᴛᴀɴ ᴅᴇɴᴛʀᴏ'
     - '<white>/ffa kitcreate <id> <dark_gray>· <white>/ffa kitsave <id> <dark_gray>· <white>/ffa kitdelete <id> <dark_gray>· <white>/ffa kitlist'
     - '<white>/ffa delete <arena> <dark_gray>· <white>/ffa reload'
 
@@ -428,7 +482,8 @@ gui:
 #
 #  hud.title es el titulo del marcador. Debajo, una lista por modo: se usa la del
 #  modo del evento (hud.juggernaut, hud.classic, hud.gun-game,
-#  hud.one-in-the-chamber) o hud.arena en las arenas permanentes.
+#  hud.one-in-the-chamber,
+#  hud.last-standing) o hud.arena en las arenas permanentes.
 #
 #  Las variantes *-actionbar son para hud.type: ACTIONBAR o BOTH.
 #  Un modo nuevo solo tiene que añadir aqui su lista con el mismo nombre.
@@ -485,3 +540,12 @@ hud:
     - ' '
     - '<gray>ᴠɪᴠᴏs: <white><alive>'
   one-in-the-chamber-actionbar: '<gray>ᴠɪᴅᴀs <white><lives> <dark_gray>· <gray>ꜰʟᴇᴄʜᴀs <white><ammo> <dark_gray>· <gray>ᴠɪᴠᴏs <white><alive>'
+  last-standing:
+    - ' '
+    - '<gray>ᴠɪᴠᴏs: <white><alive><gray>/<white><total>'
+    - '<gray>ᴠɪᴅᴀs: <white><lives>'
+    - '<gray>ᴋɪʟʟs: <white><kills>'
+    - '<gray>ᴛɪᴇᴍᴘᴏ: <white><remaining>'
+    - ' '
+    - '<gray>ᴘᴜᴇsᴛᴏ: <white><place>'
+  last-standing-actionbar: '<gray>ᴠɪᴠᴏs <white><alive><gray>/<white><total> <dark_gray>· <gray>ᴠɪᴅᴀs <white><lives> <dark_gray>· <gray>ᴋɪʟʟs <white><kills>'

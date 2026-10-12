@@ -50,6 +50,11 @@ public final class ConnectionListener implements Listener {
         plugin.kits().stopEditing(player.getUniqueId());
         plugin.selection().clear(player.getUniqueId());
 
+        // Aunque se quede dentro (remove-from-* en false) se le quita la invisibilidad:
+        // Bukkit guarda sus datos justo después y no tiene por qué llevarse el efecto
+        // puesto a la siguiente sesión. Al volver, el reloj se la repone.
+        plugin.cloak().clear(player);
+
         FFASession session = plugin.sessions().of(player);
         if (session != null && removes(session)) {
             // El inventario se devuelve dentro de este evento a propósito: Bukkit guarda

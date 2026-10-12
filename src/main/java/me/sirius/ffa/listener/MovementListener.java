@@ -33,7 +33,9 @@ public final class MovementListener implements Listener {
         }
         Player player = event.getPlayer();
         FFASession session = plugin.sessions().of(player);
-        if (session == null) {
+        if (session == null || session.spectator()) {
+            // Un eliminado mira volando y no puede tocar nada: devolverle al cuboide cada
+            // vez que se asoma solo le impide seguir la partida.
             return;
         }
         // Antes de empezar, los jugadores del evento esperan en la sala de espera, que

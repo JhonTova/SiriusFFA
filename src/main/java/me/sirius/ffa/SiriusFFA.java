@@ -27,6 +27,7 @@ import me.sirius.ffa.listener.MovementListener;
 import me.sirius.ffa.listener.TeleportListener;
 import me.sirius.ffa.mode.ModeRegistry;
 import me.sirius.ffa.reward.Rewards;
+import me.sirius.ffa.session.Cloak;
 import me.sirius.ffa.session.FFAClock;
 import me.sirius.ffa.session.LeaveReason;
 import me.sirius.ffa.session.SessionManager;
@@ -53,6 +54,7 @@ public final class SiriusFFA extends SiriusPlugin {
     private StatsService stats;
 
     private FFAClock clock;
+    private Cloak cloak;
     private Hud hud;
     private Rewards rewards;
     private Selection selection;
@@ -83,6 +85,7 @@ public final class SiriusFFA extends SiriusPlugin {
         this.schedules = new EventScheduler(this);
         this.sessions = new SessionManager(this);
         this.clock = new FFAClock(this);
+        this.cloak = new Cloak(this);
         this.hud = new Hud(this);
         this.rewards = new Rewards(this);
         this.selection = new Selection();
@@ -205,6 +208,7 @@ public final class SiriusFFA extends SiriusPlugin {
         events.reload();
         schedules.reload();
         events.warnOpenArenas();
+        cloak.refreshAll();
     }
 
     public FFAConfig config() {
@@ -253,6 +257,10 @@ public final class SiriusFFA extends SiriusPlugin {
 
     public FFAClock clock() {
         return clock;
+    }
+
+    public Cloak cloak() {
+        return cloak;
     }
 
     public Hud hud() {

@@ -40,6 +40,7 @@ public final class FFAClock {
             Player player = Bukkit.getPlayer(session.player());
             if (player != null) {
                 plugin.hud().update(player, session);
+                plugin.cloak().refresh(player, session);
             }
         }
 

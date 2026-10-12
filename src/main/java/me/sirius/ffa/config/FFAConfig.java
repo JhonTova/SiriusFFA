@@ -73,6 +73,11 @@ public final class FFAConfig {
 
     private boolean spectatorEnabled;
 
+    private boolean invisible;
+    private boolean invisibleEvents;
+    private boolean invisibleArenas;
+    private int invisibleSeconds;
+
     private boolean closeArenasDuringEvents;
     private boolean ejectArenasOnEventStart;
     private boolean pvpOffOnEnd;
@@ -156,6 +161,14 @@ public final class FFAConfig {
         this.removeFromEventOnQuit = file.bool("disconnect.remove-from-event", true);
 
         this.spectatorEnabled = file.bool("spectator.enabled", true);
+
+        this.invisible = file.bool("invisible.enabled", false);
+        this.invisibleEvents = file.bool("invisible.events", true);
+        this.invisibleArenas = file.bool("invisible.arenas", true);
+        // Nunca permanente y nunca eterno: el tope existe para que a quien se caiga del
+        // servidor sin pasar por la salida se le acabe solo.
+        this.invisibleSeconds = Math.max(60, Math.min(3600,
+                Durations.seconds(file.string("invisible.duration", "15m"), 900)));
 
         this.closeArenasDuringEvents = file.bool("events.close-arenas", true);
         this.ejectArenasOnEventStart = file.bool("events.eject-arena-players", false);
@@ -341,6 +354,29 @@ public final class FFAConfig {
 
     public boolean spectatorEnabled() {
         return spectatorEnabled;
+    }
+
+    public boolean invisible() {
+        return invisible;
+    }
+
+    // Interruptor en caliente: se guarda en config.yml para que aguante un reinicio.
+    public void invisible(boolean value) {
+        this.invisible = value;
+        file.set("invisible.enabled", value);
+        file.save();
+    }
+
+    public boolean invisibleInEvents() {
+        return invisibleEvents;
+    }
+
+    public boolean invisibleInArenas() {
+        return invisibleArenas;
+    }
+
+    public int invisibleSeconds() {
+        return invisibleSeconds;
     }
 
     public boolean closeArenasDuringEvents() {
