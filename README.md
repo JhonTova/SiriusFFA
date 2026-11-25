@@ -1,5 +1,7 @@
 # SiriusFFA
 
+[![build](https://github.com/JhonTova/SiriusFFA/actions/workflows/build.yml/badge.svg)](https://github.com/JhonTova/SiriusFFA/actions/workflows/build.yml) [![release](https://img.shields.io/github/v/release/JhonTova/SiriusFFA?label=release)](https://github.com/JhonTova/SiriusFFA/releases/latest) ![Minecraft](https://img.shields.io/badge/Minecraft-1.21.11%2B-62B47A) ![Java](https://img.shields.io/badge/Java-21-E76F00)
+
 FFA para Minecraft **1.21.11**, construido sobre **SiriusCore**, pensado para un servidor
 **survival** donde perder o duplicar un objeto es un problema serio.
 
@@ -498,3 +500,21 @@ anterior de cada jugador se guarda y se le devuelve al salir.
 ---
 
 Hecho por **Sirius** · [github.com/JhonTova](https://github.com/JhonTova)
+
+## Descarga
+
+El `.jar` de cada versión está en [Releases](https://github.com/JhonTova/SiriusFFA/releases/latest).
+
+## Compilar desde el código
+
+Requiere Java 21 y Maven. SiriusCore no está en un repositorio Maven público, así que
+primero se instala en local la versión que declara el `pom.xml`:
+
+```bash
+git clone --branch v1.1.0 https://github.com/JhonTova/SiriusCore.git
+mvn -f SiriusCore/pom.xml install -DskipTests
+mvn package        # en este repositorio; el .jar queda en target/
+```
+
+Cada push y pull request se compila en GitHub Actions. Al subir una tag `v*`, el `.jar`
+se adjunta solo a la release.

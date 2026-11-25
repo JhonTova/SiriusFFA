@@ -1,0 +1,66 @@
+# Compila el plugin en cada push y pull request, y publica el .jar en la
+# release cuando se sube una tag v*. Así el .jar que descarga un servidor es
+# el que sale del código del repositorio, no el de un portátil.
+name: build
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      # SiriusCore no está en un repositorio Maven público: se compila desde
+      # la tag que corresponde a la versión declarada en el pom.xml.
+      - name: Versión de SiriusCore
+        id: core
+        run: |
+          v=$(grep -A1 '<artifactId>sirius-core</artifactId>' pom.xml | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+          echo "version=$v" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@v4
+        with:
+          repository: JhonTova/SiriusCore
+          ref: v${{ steps.core.outputs.version }}
+          path: .siriuscore
+
+      - name: Instalar SiriusCore
+        run: mvn -B -q -f .siriuscore/pom.xml install -DskipTests
+
+      - name: Compilar
+        run: mvn -B clean package
+
+      - name: Preparar .jar
+        run: |
+          mkdir dist
+          find target -maxdepth 1 -name '*.jar' ! -name 'original-*' -exec cp {} dist/ \;
+          ls dist/*.jar
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.event.repository.name }}-jar
+          path: dist/*.jar
+          if-no-files-found: error
+
+      - name: Adjuntar a la release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.jar
