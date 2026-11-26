@@ -55,7 +55,7 @@ Un jugador solo puede estar en uno de los dos. Nunca en los dos a la vez.
 
 | | |
 |---|---|
-| Servidor | Spigot, Paper, Purpur o Folia · 1.21.11 |
+| Servidor | Spigot, Paper o Purpur · 1.21.11 |
 | Java | 21 |
 | Obligatorio | `SiriusCore 1.1.0+` |
 | Opcional | `WorldGuard`, `DeluxeCombat`, `PlaceholderAPI`, `MMOItems` |
@@ -518,3 +518,8 @@ mvn package        # en este repositorio; el .jar queda en target/
 
 Cada push y pull request se compila en GitHub Actions. Al subir una tag `v*`, el `.jar`
 se adjunta solo a la release.
+
+## Licencia
+
+[MIT](LICENSE): puedes usarlo, modificarlo y redistribuirlo manteniendo el aviso de copyright.
+Requiere SiriusCore, que tiene su propia licencia.
